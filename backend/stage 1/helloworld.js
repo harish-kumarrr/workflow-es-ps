@@ -2,7 +2,7 @@ const { WorkflowHost, StepBody, ExecutionResult } = require("workflow-es");
 
 class HelloWorld extends StepBody {
   run(context) {
-    console.log("Hello World");
+    console.log("Hello World",this.name);
     return Promise.resolve(ExecutionResult.next());
   }
 }
@@ -15,9 +15,13 @@ class GoodbyeWorld extends StepBody {
 }
 
 class HelloWorld_Workflow {
-  constructor(id, version) {
+  constructor(id, version, name) {
+    this.name = name;
     this.id = id;
     this.version = version;
+    console.log(
+      "Creating workflow with ID: " + id + " and version: " + version
+    );
   }
 
   build(builder) {
@@ -28,11 +32,22 @@ class HelloWorld_Workflow {
 }
 
 // Register the workflow correctly
-const host = new WorkflowHost();
-let workflow = new HelloWorld_Workflow("hello-world-new", 2);
-host.registerWorkflow(workflow); // Ensure instance is passed
-host.start();
+// const host = new WorkflowHost();
+// let workflow = new HelloWorld_Workflow("hello-world-new", 2);
+// host.registerWorkflow(workflow); // Ensure instance is passed
+// host.start();
 
-host
-  .startWorkflow(workflow.id, workflow.version)
-  .then((id) => console.log("Started workflow: " + id));
+// host
+//   .startWorkflow(workflow.id, workflow.version)
+//   .then((id) => console.log("Started workflow: " + id));
+
+for (let i = 0; i < 5; i++) {
+  const host = new WorkflowHost();
+  let workflow = new HelloWorld_Workflow("hello-world-new", i, `name-${i}`);
+  // Register the workflow correctly
+  host.registerWorkflow(workflow); // Ensure instance is passed
+  host.start();
+  host
+    .startWorkflow(workflow.id, workflow.version)
+    .then((id) => console.log("Started workflow: " + id));
+}
