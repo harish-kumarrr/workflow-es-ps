@@ -1,26 +1,25 @@
-"use strict";
-import React, { memo } from "react";
-const Child = memo(({ obj }) => {
-  console.log("Childcomponentrendered");
+import React, { useEffect, useState } from "react";
+
+function App() {
+  const [arr] = useState([2, 4, 5, 1, 3, 7]);
+  const [prefix, setPrefix] = useState([]);
+
+  useEffect(() => {
+    const ps = [arr[0]];
+    for (let i = 1; i < arr.length; i++) {
+      ps[i] = ps[i - 1] + arr[i];
+    }
+    console.log("psps",ps)
+    setPrefix(ps);
+  }, [arr]);
+
+  const getRangeSum = (i, j) => (i === 0 ? prefix[j] : prefix[j] - prefix[i - 1]);
+
   return (
     <div>
-      <h1>Child Component {obj?.no}</h1>
-    </div>
-  );
-});
-function App() {
-  const [count, setCount] = React.useState(0);
-  return (
-    <div className="App">
-      <h1>Parent Component {count}</h1>
-      <Child no={{ obj: { no: 12 } }} />
-      <button
-        onClick={() => {
-          setCount((prev) => prev + 1);
-        }}
-      >
-        Click me
-      </button>
+      <h2>Array: {arr.join(", ")}</h2>
+      <p>Sum(1, 3): {getRangeSum(1, 3)}</p>
+      <p>Sum(0, 5): {getRangeSum(0, 5)}</p>
     </div>
   );
 }
